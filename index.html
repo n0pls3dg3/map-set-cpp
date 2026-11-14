@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#27272a"><meta name="description" content="8 bài luyện map, set và multiset C++17 từ cơ bản đến trung bình. Tóm tắt đề, ví dụ, lời giải và code mẫu."><title>Map và set - Bài tập và lời giải</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/katex.css"><link rel="stylesheet" href="assets/style.css">
+<script defer src="assets/prism.js"></script><script defer src="assets/prism-clike.js"></script><script defer src="assets/prism-c.js"></script><script defer src="assets/prism-cpp.js"></script><script defer src="assets/katex.js"></script><script defer src="assets/auto-render.js"></script><script defer src="assets/app.js"></script></head>
+<body><a class="skip-link" href="#noi-dung">Đến nội dung</a>
+<header class="topbar"><button class="icon-button menu-toggle" aria-label="Mở mục lục" aria-controls="sidebar" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16M4 12h16M4 19h10"/></svg></button><a class="brand" href="#dau-trang"><span class="brand-icon">&#123; &#125;</span><span>Sổ tay C++</span></a><span class="breadcrumb">/</span><span class="document-title">Map và set - Bài tập và lời giải</span><a class="source-link" href="https://hackmd.io/@2SchoolGuideline/rJQ5mNoza" target="_blank" rel="noopener noreferrer" title="Trang mẫu HackMD">Mẫu tham khảo <span aria-hidden="true">↗</span></a></header>
+<div class="sidebar-backdrop" hidden></div><aside id="sidebar" class="sidebar" aria-label="Mục lục" inert><div class="sidebar-heading">Mục lục<button class="icon-button close-sidebar" aria-label="Đóng mục lục">×</button></div><nav><a href="#dau-trang">Map và set - Bài tập và lời giải</a><a href="#tong-quan">Tổng quan</a><a href="#bai-tap">Bài tập</a><ul><li><a href="#bai-1">Bài 1. CSES - Distinct Numbers</a></li><li><a href="#bai-2">Bài 2. LeetCode - Valid Anagram</a></li><li><a href="#bai-3">Bài 3. LeetCode - Intersection of Two Arrays</a></li><li><a href="#bai-4">Bài 4. CSES - Sum of Two Values</a></li><li><a href="#bai-5">Bài 5. CSES - Concert Tickets</a></li><li><a href="#bai-6">Bài 6. CSES - Playlist</a></li><li><a href="#bai-7">Bài 7. CSES - Subarray Sums II</a></li><li><a href="#bai-8">Bài 8. CSES - Traffic Lights</a></li></ul></nav></aside>
+<main id="noi-dung" class="markdown-body"><div id="dau-trang"></div><h1>Map và set - Bài tập và lời giải</h1>
+<div class="document-meta">C++17 · 8 bài tập · Cơ bản đến trung bình</div>
+<h6 class="content-label">📋 Nội dung</h6><nav class="inline-toc" aria-label="Nội dung tài liệu"><ul><li><a href="#tong-quan">Tổng quan</a></li><li><a href="#bai-tap">Bài tập</a><ul><li><a href="#bai-1">Bài 1. CSES - Distinct Numbers</a></li><li><a href="#bai-2">Bài 2. LeetCode - Valid Anagram</a></li><li><a href="#bai-3">Bài 3. LeetCode - Intersection of Two Arrays</a></li><li><a href="#bai-4">Bài 4. CSES - Sum of Two Values</a></li><li><a href="#bai-5">Bài 5. CSES - Concert Tickets</a></li><li><a href="#bai-6">Bài 6. CSES - Playlist</a></li><li><a href="#bai-7">Bài 7. CSES - Subarray Sums II</a></li><li><a href="#bai-8">Bài 8. CSES - Traffic Lights</a></li></ul></li></ul></nav><hr>
+<section id="tong-quan"><h1>Tổng quan</h1>
+<p><code>set</code> và <code>map</code> là hai cấu trúc dữ liệu STL giúp lưu và tìm thông tin theo khóa. Phần dưới dùng C++17 và thứ tự tăng dần mặc định, trừ ví dụ có khai báo <code>greater</code>.</p>
+<nav class="overview-nav" aria-label="Các mục lý thuyết"><ul>
+<li><a href="#tinh-chat">Tính chất chung và cách lựa chọn</a></li>
+<li><a href="#su-dung-set">Set và các thao tác</a></li>
+<li><a href="#su-dung-map">Map và các thao tác</a></li>
+<li><a href="#iterator">Iterator và cách duyệt</a></li>
+<li><a href="#tim-kiem-bound">lower_bound và upper_bound</a></li>
+<li><a href="#sap-xep">Thứ tự sắp xếp và khóa phức hợp</a></li>
+<li><a href="#do-phuc-tap">Bảng độ phức tạp</a></li>
+<li><a href="#multiset">Multiset trong các bài tập</a></li>
+<li><a href="#ung-dung">Các dạng ứng dụng và lỗi thường gặp</a></li>
+</ul></nav>
+
+<h2 id="tinh-chat">1. Tính chất chung và cách lựa chọn</h2>
+<div class="table-scroll"><table><thead><tr><th>Tính chất</th><th><code>set&lt;T&gt;</code></th><th><code>map&lt;K, V&gt;</code></th></tr></thead><tbody>
+<tr><td>Thông tin lưu</td><td>Các giá trị kiểu <code>T</code>, mỗi giá trị cũng là khóa</td><td>Cặp khóa kiểu <code>K</code> và giá trị kiểu <code>V</code></td></tr>
+<tr><td>Trùng lặp</td><td>Mỗi khóa xuất hiện tối đa một lần</td><td>Mỗi khóa xuất hiện tối đa một lần, nhiều khóa có thể có cùng giá trị</td></tr>
+<tr><td>Thứ tự mặc định</td><td>Tăng dần theo giá trị</td><td>Tăng dần theo khóa</td></tr>
+<tr><td>Nhu cầu thường gặp</td><td>Loại trùng, kiểm tra tồn tại, tìm giá trị lân cận</td><td>Đếm tần suất, lưu vị trí, ánh xạ tên hoặc mã sang thông tin</td></tr>
+<tr><td>Thay đổi dữ liệu</td><td>Muốn đổi giá trị thì xóa giá trị cũ rồi thêm giá trị mới</td><td>Sửa được giá trị gắn với khóa, muốn đổi khóa thì xóa và thêm lại</td></tr>
+</tbody></table></div>
+<ul><li>Thứ tự được duy trì sau mỗi lần thêm hoặc xóa. Hai cấu trúc thường được cài bằng cây tìm kiếm cân bằng. Chuẩn C++ quy định hành vi và độ phức tạp, không bắt buộc một loại cây cụ thể.</li>
+<li>Số phần tử có thể tăng giảm trong lúc chạy. Bộ nhớ sử dụng là <code>O(n)</code>, với chi phí quản lý cho từng nút.</li>
+<li>Tìm kiếm, thêm phần tử thông thường và xóa theo khóa mất <code>O(log n)</code>. Đây là giới hạn theo số phép so sánh, với giả thiết chi phí so sánh khóa là hằng số.</li>
+<li>Kiểu khóa phải so sánh được theo thứ tự. Khóa số nguyên, chuỗi và <code>pair</code> thường dùng trực tiếp. Với chuỗi, thời gian so sánh còn phụ thuộc độ dài phần tiền tố chung.</li></ul>
+<p>Nếu chỉ cần biết <em>“giá trị này đã xuất hiện chưa?”</em>, dùng <code>set</code>. Nếu cần biết thêm <em>“xuất hiện mấy lần?”</em> hoặc <em>“ở vị trí nào?”</em>, dùng <code>map</code>.</p>
+<h4>Khai báo</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span></div><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;functional&gt;
+#include &lt;iterator&gt;
+#include &lt;utility&gt;
+using namespace std;
+
+set&lt;int&gt; numbers;
+set&lt;string&gt; names;
+map&lt;int, int&gt; frequency;
+map&lt;string, int&gt; scores;</code></pre></div></div>
+<p>Các đoạn code sau là ví dụ độc lập, sử dụng các thư viện trên. Khi chạy riêng, đặt phần thao tác trong hàm <code>main()</code>.</p>
+
+<h2 id="su-dung-set">2. Set và các thao tác</h2>
+<h4>Thêm phần tử và loại trùng</h4>
+<p><code>insert(x)</code> và <code>emplace(...)</code> thêm phần tử nếu khóa chưa tồn tại. Kết quả trả về gồm iterator đến phần tử và boolean cho biết có thêm mới thành công hay không.</p>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {5, 1, 5, 3}; // Contains 1, 3, 5.
+s.insert(2);              // Contains 1, 2, 3, 5.
+auto [it, inserted] = s.insert(3);
+cout &lt;&lt; inserted &lt;&lt; &#x27;\n&#x27;; // 0: 3 already exists.
+cout &lt;&lt; *it &lt;&lt; &#x27;\n&#x27;;      // 3
+
+s.emplace(7);
+cout &lt;&lt; s.size() &lt;&lt; &#x27;\n&#x27;;  // 5</code></pre></div></div>
+<h4>Tìm kiếm và kiểm tra tồn tại</h4>
+<p><code>find(x)</code> trả iterator đến <code>x</code>, hoặc <code>end()</code> nếu không có. <code>count(x)</code> của set chỉ trả <code>0</code> hoặc <code>1</code>.</p>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {1, 3, 5};
+if (s.find(3) != s.end()) {
+    cout &lt;&lt; &quot;Found 3\n&quot;;
+}
+if (s.count(4) == 0) {
+    cout &lt;&lt; &quot;4 is absent\n&quot;;
+}</code></pre></div></div>
+<h4>Xóa phần tử, kiểm tra rỗng và xóa toàn bộ</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {1, 3, 5, 7};
+cout &lt;&lt; s.erase(3) &lt;&lt; &#x27;\n&#x27;; // 1: one element removed.
+cout &lt;&lt; s.erase(9) &lt;&lt; &#x27;\n&#x27;; // 0: key not found.
+
+auto it = s.find(5);
+if (it != s.end()) {
+    s.erase(it);
+}
+
+cout &lt;&lt; s.empty() &lt;&lt; &#x27;\n&#x27;; // 0: still contains 1, 7.
+s.clear();
+cout &lt;&lt; s.size() &lt;&lt; &#x27;\n&#x27;;  // 0</code></pre></div></div>
+
+<h2 id="su-dung-map">3. Map và các thao tác</h2>
+<p>Mỗi phần tử của map là một cặp <code>key</code> và <code>value</code>. Hai khóa khác nhau có thể lưu cùng một value. Khi duyệt, map sắp theo <strong>key</strong>, kể cả khi value là số lần xuất hiện hay điểm số.</p>
+<h4>Thêm, truy cập và cập nhật bằng dấu []</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div><pre><code class="language-cpp">map&lt;string, int&gt; score;
+score[&quot;An&quot;] = 8;  // Add a new key.
+score[&quot;Binh&quot;] = 8;
+score[&quot;An&quot;] = 10; // Update the existing value.
+cout &lt;&lt; score[&quot;An&quot;] &lt;&lt; &#x27;\n&#x27;; // 10
+
+cout &lt;&lt; score[&quot;Chi&quot;] &lt;&lt; &#x27;\n&#x27;; // 0, and key &quot;Chi&quot; is created.
+cout &lt;&lt; score.size() &lt;&lt; &#x27;\n&#x27;;  // 3</code></pre></div></div>
+<p><strong>Chú ý dấu []</strong>. Nếu khóa chưa có, <code>mp[key]</code> tạo khóa và khởi tạo value theo kiểu của nó, chẳng hạn <code>0</code> với <code>int</code> hoặc chuỗi rỗng với <code>string</code>. Vì vậy, chỉ đọc bằng dấu [] cũng có thể làm map tăng kích thước.</p>
+<h4>Phân biệt các cách thêm</h4>
+<ul><li><code>mp[key] = value</code> thêm mới hoặc ghi đè value.</li>
+<li><code>mp.insert({key, value})</code> và <code>mp.emplace(key, value)</code> chỉ thêm khi chưa có khóa. Khóa đã có thì value cũ được giữ lại.</li>
+<li><code>mp.insert_or_assign(key, value)</code> thêm mới hoặc ghi đè, có từ C++17.</li>
+<li><code>mp.try_emplace(key, ...)</code> chỉ dựng value mới khi khóa chưa có, có từ C++17.</li></ul>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div><pre><code class="language-cpp">map&lt;int, string&gt; name;
+name.insert({2, &quot;An&quot;});
+auto [it, inserted] = name.insert({2, &quot;Binh&quot;});
+cout &lt;&lt; inserted &lt;&lt; &#x27;\n&#x27;; // 0
+cout &lt;&lt; name[2] &lt;&lt; &#x27;\n&#x27;;  // An
+
+name.insert_or_assign(2, &quot;Binh&quot;);
+cout &lt;&lt; name[2] &lt;&lt; &#x27;\n&#x27;;  // Binh</code></pre></div></div>
+<h4>Tìm kiếm mà không tạo khóa và dùng at</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span></div><pre><code class="language-cpp">map&lt;string, int&gt; score = {{&quot;An&quot;, 10}, {&quot;Binh&quot;, 8}};
+auto it = score.find(&quot;Chi&quot;);
+if (it == score.end()) {
+    cout &lt;&lt; &quot;No score for Chi\n&quot;;
+} else {
+    cout &lt;&lt; it-&gt;first &lt;&lt; &#x27; &#x27; &lt;&lt; it-&gt;second &lt;&lt; &#x27;\n&#x27;;
+}
+
+cout &lt;&lt; score.count(&quot;An&quot;) &lt;&lt; &#x27;\n&#x27;; // 1
+cout &lt;&lt; score.at(&quot;An&quot;) &lt;&lt; &#x27;\n&#x27;;    // 10
+// score.at(&quot;Chi&quot;) throws std::out_of_range.
+
+score.erase(&quot;Binh&quot;);
+score.clear();</code></pre></div></div>
+<p><code>at(key)</code> không thêm khóa. Nếu khóa không tồn tại, hàm ném ngoại lệ <code>std::out_of_range</code>. Map cũng có <code>size()</code>, <code>empty()</code>, <code>clear()</code> và xóa bằng iterator như set.</p>
+<h4>Ứng dụng đếm tần suất</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div><pre><code class="language-cpp">int a[] = {2, 3, 2, 5, 3, 2};
+map&lt;int, int&gt; frequency;
+for (int x : a) {
+    ++frequency[x];
+}
+
+for (const auto&amp; [value, count] : frequency) {
+    cout &lt;&lt; value &lt;&lt; &#x27; &#x27; &lt;&lt; count &lt;&lt; &#x27;\n&#x27;;
+}
+// 2 3
+// 3 2
+// 5 1</code></pre></div></div>
+<p>Với khóa chưa có, value ban đầu bằng 0 nên <code>++frequency[x]</code> tăng thành 1. Nếu chỉ kiểm tra tồn tại, dùng <code>find</code> hoặc <code>count</code>. Điều kiện <code>if (mp[x])</code> vừa có thể tạo khóa vừa không phân biệt được “khóa không có” với “khóa có value bằng 0”.</p>
+
+<h2 id="iterator">4. Iterator và cách duyệt</h2>
+<p>Iterator có thể hiểu là vị trí trỏ đến một phần tử trong cấu trúc. <code>begin()</code> trỏ đến phần tử đầu, còn <code>end()</code> là mốc <strong>sau phần tử cuối</strong>. Đọc <code>*end()</code> là không hợp lệ.</p>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {1, 3, 5};
+for (int x : s) {
+    cout &lt;&lt; x &lt;&lt; &#x27; &#x27;; // 1 3 5
+}
+
+for (auto it = s.rbegin(); it != s.rend(); ++it) {
+    cout &lt;&lt; *it &lt;&lt; &#x27; &#x27;; // 5 3 1
+}
+
+map&lt;string, int&gt; score = {{&quot;An&quot;, 8}, {&quot;Binh&quot;, 9}};
+for (const auto&amp; [name, points] : score) {
+    cout &lt;&lt; name &lt;&lt; &#x27; &#x27; &lt;&lt; points &lt;&lt; &#x27;\n&#x27;;
+}
+
+for (auto&amp; [name, points] : score) {
+    ++points; // Values can be modified; keys cannot.
+}</code></pre></div></div>
+<ul><li>Với set, <code>*it</code> là giá trị. Với map, <code>it-&gt;first</code> là khóa và <code>it-&gt;second</code> là value.</li>
+<li>Iterator hỗ trợ <code>++it</code>, <code>--it</code>. Muốn lùi phải chắc chắn chưa ở <code>begin()</code>. Muốn lấy <code>prev(end())</code> phải chắc chắn cấu trúc không rỗng.</li>
+<li>Set và map không hỗ trợ truy cập theo thứ tự bằng <code>it + k</code>. Dùng <code>next(it, k)</code> hoặc <code>advance</code> cần đi qua từng bước. Lấy phần tử thứ k theo cách đó mất <code>O(k)</code>.</li>
+<li><code>mp[3]</code> truy cập <strong>khóa 3</strong>. Set không có toán tử [].</li>
+<li>Thêm phần tử không làm mất hiệu lực iterator cũ. Xóa chỉ làm mất hiệu lực iterator hoặc tham chiếu đến phần tử bị xóa.</li></ul>
+<h4>Lấy phần tử đầu, cuối và xóa trong lúc duyệt</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {1, 2, 3, 4, 5};
+if (!s.empty()) {
+    cout &lt;&lt; *s.begin() &lt;&lt; &#x27;\n&#x27;;  // 1
+    cout &lt;&lt; *s.rbegin() &lt;&lt; &#x27;\n&#x27;; // 5
+}
+
+for (auto it = s.begin(); it != s.end(); ) {
+    if (*it % 2 == 0) {
+        it = s.erase(it); // Returns the next iterator.
+    } else {
+        ++it;
+    }
+}
+// Remaining elements: 1, 3, 5.</code></pre></div></div>
+<p>Với map, khóa nhỏ nhất là <code>mp.begin()-&gt;first</code> và khóa lớn nhất là <code>mp.rbegin()-&gt;first</code>, khi map không rỗng và dùng thứ tự tăng dần mặc định.</p>
+
+<h2 id="tim-kiem-bound">5. lower_bound và upper_bound</h2>
+<p>Với thứ tự tăng dần mặc định, hai hàm thành viên sau chạy trong <code>O(log n)</code>. Cả set và map đều hỗ trợ, trong đó map tìm theo khóa.</p>
+<div class="table-scroll"><table><thead><tr><th>Nhu cầu</th><th>Cách tìm</th><th>Điều kiện kiểm tra</th></tr></thead><tbody>
+<tr><td>Giá trị nhỏ nhất ≥ x</td><td><code>lower_bound(x)</code></td><td>Iterator khác <code>end()</code></td></tr>
+<tr><td>Giá trị nhỏ nhất &gt; x</td><td><code>upper_bound(x)</code></td><td>Iterator khác <code>end()</code></td></tr>
+<tr><td>Giá trị lớn nhất ≤ x</td><td>Lùi một bước từ <code>upper_bound(x)</code></td><td>Iterator ban đầu khác <code>begin()</code></td></tr>
+<tr><td>Giá trị lớn nhất &lt; x</td><td>Lùi một bước từ <code>lower_bound(x)</code></td><td>Iterator ban đầu khác <code>begin()</code></td></tr>
+</tbody></table></div>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span></div><pre><code class="language-cpp">set&lt;int&gt; s = {2, 5, 8, 11};
+auto lo = s.lower_bound(5);
+auto hi = s.upper_bound(5);
+cout &lt;&lt; *lo &lt;&lt; &#x27;\n&#x27;; // 5
+cout &lt;&lt; *hi &lt;&lt; &#x27;\n&#x27;; // 8
+
+int x = 7;
+auto it = s.upper_bound(x);
+if (it != s.begin()) {
+    --it;
+    cout &lt;&lt; *it &lt;&lt; &#x27;\n&#x27;; // 5: largest value &lt;= 7.
+} else {
+    cout &lt;&lt; &quot;No suitable value\n&quot;;
+}
+
+map&lt;int, string&gt; labels = {{2, &quot;A&quot;}, {8, &quot;B&quot;}};
+auto nextLabel = labels.lower_bound(5);
+if (nextLabel != labels.end()) {
+    cout &lt;&lt; nextLabel-&gt;first &lt;&lt; &#x27;\n&#x27;; // 8
+}</code></pre></div></div>
+<p>Ưu tiên <code>s.lower_bound(x)</code> và <code>s.upper_bound(x)</code>. Các hàm chung như <code>std::lower_bound(s.begin(), s.end(), x)</code> có thể phải di chuyển iterator tuyến tính trên set/map, dù số phép so sánh vẫn là logarithm. Đây là thao tác chính trong bài Concert Tickets.</p>
+
+<h2 id="sap-xep">6. Thứ tự sắp xếp và khóa phức hợp</h2>
+<h4>Sắp xếp giảm dần</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div><pre><code class="language-cpp">set&lt;int, greater&lt;int&gt;&gt; s = {1, 5, 3};
+for (int x : s) cout &lt;&lt; x &lt;&lt; &#x27; &#x27;; // 5 3 1
+
+map&lt;int, string, greater&lt;int&gt;&gt; names;
+names[2] = &quot;B&quot;;
+names[7] = &quot;G&quot;;
+// Key order: 7, 2.</code></pre></div></div>
+<p>Khi dùng comparator khác, <code>begin()</code> là phần tử đầu theo comparator đó. Với <code>greater</code>, đó là phần tử lớn nhất. Các bound cũng tuân theo comparator. Trong thứ tự giảm dần, <code>lower_bound(x)</code> tìm phần tử đầu tiên ≤ x, còn <code>upper_bound(x)</code> tìm phần tử đầu tiên &lt; x.</p>
+<h4>Dùng pair làm khóa</h4>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div><pre><code class="language-cpp">set&lt;pair&lt;int, int&gt;&gt; points;
+points.insert({2, 3});
+points.insert({1, 9});
+points.insert({2, 1});
+// Order: (1, 9), (2, 1), (2, 3).
+
+map&lt;pair&lt;int, int&gt;, int&gt; countAt;
+++countAt[{2, 3}];</code></pre></div></div>
+<p>Với comparator mặc định, <code>pair</code> so sánh thành phần thứ nhất trước, bằng nhau mới xét thành phần thứ hai. Chuỗi được sắp theo thứ tự từ điển của phép so sánh C++, không tự sắp theo quy tắc từ điển tiếng Việt.</p>
+<p>Hai khóa được coi là trùng khi <code>comp(a, b)</code> và <code>comp(b, a)</code> đều false. Nếu tự viết comparator, phải bảo đảm thứ tự yếu nghiêm ngặt, gồm <code>comp(a, a) == false</code> và tính bắc cầu. Dùng <code>&lt;</code> thay vì <code>&lt;=</code> khi biểu diễn quan hệ đứng trước.</p>
+
+<h2 id="do-phuc-tap">7. Bảng độ phức tạp</h2>
+<p>Gọi n là số phần tử hiện tại. Bảng dưới áp dụng cho set và map với các lời gọi thông thường, không dùng hint.</p>
+<div class="table-scroll"><table><thead><tr><th>Thao tác</th><th>Độ phức tạp</th><th>Ghi chú</th></tr></thead><tbody>
+<tr><td><code>size()</code>, <code>empty()</code></td><td>O(1)</td><td>Lấy kích thước hoặc kiểm tra rỗng</td></tr>
+<tr><td><code>begin()</code>, <code>end()</code>, <code>rbegin()</code></td><td>O(1)</td><td>Lấy iterator, phải kiểm tra trước khi đọc</td></tr>
+<tr><td><code>find(x)</code>, <code>count(x)</code></td><td>O(log n)</td><td>Count của set/map trả 0 hoặc 1</td></tr>
+<tr><td><code>insert</code>, <code>emplace</code></td><td>O(log n)</td><td>Thêm một phần tử</td></tr>
+<tr><td><code>mp[key]</code>, <code>mp.at(key)</code></td><td>O(log n)</td><td>[] có thể chèn khóa mới</td></tr>
+<tr><td><code>lower_bound</code>, <code>upper_bound</code></td><td>O(log n)</td><td>Dùng hàm thành viên</td></tr>
+<tr><td><code>erase(key)</code></td><td>O(log n)</td><td>Set/map xóa tối đa một phần tử</td></tr>
+<tr><td><code>erase(it)</code></td><td>O(1) khấu hao</td><td>Đã có iterator hợp lệ, chưa tính chi phí tìm</td></tr>
+<tr><td><code>clear()</code>, duyệt toàn bộ</td><td>O(n)</td><td>Bộ nhớ của cấu trúc là O(n)</td></tr>
+</tbody></table></div>
+<p><em>Khấu hao</em> nghĩa là xét chi phí trung bình trên một chuỗi thao tác. Nếu tìm bằng <code>find</code> rồi xóa iterator đó, cả quá trình vẫn tốn <code>O(log n)</code>.</p>
+
+<h2 id="multiset">8. Multiset trong các bài tập</h2>
+<p><code>multiset</code> có thao tác và thứ tự như set, đồng thời cho phép nhiều phần tử bằng nhau. Cần dùng trong Concert Tickets và Traffic Lights để giữ nhiều vé cùng giá hoặc nhiều khoảng cùng độ dài.</p>
+<div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép ví dụ tổng quan">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div><pre><code class="language-cpp">multiset&lt;int&gt; values = {3, 3, 8};
+cout &lt;&lt; values.count(3) &lt;&lt; &#x27;\n&#x27;; // 2
+
+auto it = values.find(3);
+if (it != values.end()) values.erase(it);
+// Remaining: 3, 8.
+
+values.insert(3);
+values.erase(3); // Removes ALL occurrences of 3.
+// Remaining: 8.</code></pre></div></div>
+<p>Với k phần tử bằng khóa x, <code>multiset.count(x)</code> và <code>multiset.erase(x)</code> có độ phức tạp <code>O(log n + k)</code>. Xóa đúng một lần xuất hiện thì dùng <code>erase(it)</code>.</p>
+
+<h2 id="ung-dung">9. Các dạng ứng dụng và lỗi thường gặp</h2>
+<div class="table-scroll"><table><thead><tr><th>Dạng bài</th><th>Thông tin cần lưu</th><th>Bài luyện</th></tr></thead><tbody>
+<tr><td>Đếm giá trị khác nhau</td><td>Set các giá trị đã gặp</td><td><a href="#bai-1">Distinct Numbers</a></td></tr>
+<tr><td>So sánh số lượng ký tự</td><td>Map ký tự → tần suất</td><td><a href="#bai-2">Valid Anagram</a></td></tr>
+<tr><td>Tìm giá trị chung của hai mảng</td><td>Set kiểm tra tồn tại và loại trùng</td><td><a href="#bai-3">Intersection</a></td></tr>
+<tr><td>Tìm hai phần tử có tổng x</td><td>Map giá trị → vị trí đã gặp</td><td><a href="#bai-4">Sum of Two Values</a></td></tr>
+<tr><td>Tìm giá lớn nhất không vượt ngân sách</td><td>Multiset các vé chưa bán</td><td><a href="#bai-5">Concert Tickets</a></td></tr>
+<tr><td>Đoạn dài nhất không trùng</td><td>Map giá trị → vị trí gần nhất</td><td><a href="#bai-6">Playlist</a></td></tr>
+<tr><td>Đếm đoạn có tổng x</td><td>Map tổng tiền tố → số lần xuất hiện</td><td><a href="#bai-7">Subarray Sums II</a></td></tr>
+<tr><td>Quản lý vị trí và khoảng cách</td><td>Set vị trí và multiset độ dài</td><td><a href="#bai-8">Traffic Lights</a></td></tr>
+</tbody></table></div>
+<ul><li>Set chỉ lưu sự tồn tại. Khi cần số lần lặp, dùng map đếm hoặc multiset.</li>
+<li>Thêm cùng khóa vào map bằng <code>insert</code> không ghi đè. Muốn cập nhật, dùng [] hoặc <code>insert_or_assign</code>.</li>
+<li>Không thay đổi trực tiếp phần tử set hoặc khóa map qua iterator. Giá trị map có thể cập nhật bằng <code>it-&gt;second</code>.</li>
+<li>Kiểm tra rỗng trước khi lấy đầu/cuối, kiểm tra <code>end()</code> trước khi đọc iterator và <code>begin()</code> trước khi lùi.</li>
+<li>Sau khi xóa phần tử, không tiếp tục dùng iterator đã trỏ đến phần tử đó. Trong vòng lặp, nhận iterator kế tiếp từ <code>erase(it)</code>.</li>
+<li><code>contains</code> có từ C++20. Code C++17 trong tài liệu dùng <code>find</code> hoặc <code>count</code>.</li>
+<li>Dùng <code>long long</code> khi khóa là tổng tiền tố lớn hoặc value đếm số đoạn có thể vượt giới hạn int.</li></ul>
+<p class="reference-note">Đối chiếu quy tắc của thư viện trong bản thảo chuẩn C++ về <a href="https://eel.is/c++draft/associative.reqmts" target="_blank" rel="noopener noreferrer">associative containers</a> và <a href="https://eel.is/c++draft/map.access" target="_blank" rel="noopener noreferrer">truy cập phần tử map</a>. Các ví dụ ở đây dùng những thao tác có trong C++17.</p>
+<p>Phần bài tập bên dưới đi từ thao tác trực tiếp đến kết hợp map/set với tham lam, cửa sổ trượt và tổng tiền tố. Code CSES là chương trình hoàn chỉnh, còn code LeetCode là lớp <code>Solution</code> để nộp trực tiếp.</p>
+</section>
+<section id="bai-tap"><div class="section-title"><h1>Bài tập</h1><button id="toggle-solutions" type="button">Mở tất cả lời giải</button></div><section class="problem" id="bai-1" aria-labelledby="heading-1">
+<h2 id="heading-1">Bài 1. <a href="https://cses.fi/problemset/task/1621/" target="_blank" rel="noopener noreferrer">CSES - Distinct Numbers</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho \(n\) số nguyên, đếm số giá trị khác nhau. Giới hạn \(n\le 2\cdot10^5\), \(1\le a_i\le10^9\).</li><li>Dòng đầu chứa \(n\). Dòng tiếp theo chứa \(n\) số nguyên \(a_i\). In số giá trị phân biệt.</li></ul>
+<h4>Input</h4><pre class="sample"><code>5
+2 3 2 2 3</code></pre>
+<h4>Output</h4><pre class="sample"><code>2</code></pre>
+<h4>Giải thích</h4><p>Mảng \([2,3,2,2,3]\) có hai giá trị khác nhau là \(2\) và \(3\). Kết quả là \(2\).</p>
+<details class="solution" open><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Thêm mọi phần tử vào <code>set&lt;long long&gt;</code>. Vì set chỉ lưu một bản của mỗi giá trị, số phần tử trong set chính là đáp án.</li><li>Khởi tạo set rỗng. Đọc từng số và gọi <code>insert</code>. Sau khi đọc hết, in <code>size()</code>.</li><li>Mỗi giá trị xuất hiện trong mảng được thêm vào set. Những lần xuất hiện tiếp theo của cùng giá trị không làm tăng kích thước. Do đó mỗi giá trị phân biệt được đếm đúng một lần.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 1">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin &gt;&gt; n;
+    set&lt;long long&gt; values;
+
+    for (int i = 0; i &lt; n; ++i) {
+        long long x;
+        cin &gt;&gt; x;
+        values.insert(x);
+    }
+
+    cout &lt;&lt; values.size() &lt;&lt; &#x27;\n&#x27;;
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O(n\log n)\) thời gian và \(O(n)\) bộ nhớ phụ trong trường hợp xấu nhất.</p>
+<h4>Lưu ý</h4><p>Giá trị lớn đến \(10^9\) khiến mảng đánh dấu trực tiếp theo giá trị trở nên tốn bộ nhớ. Set lưu những giá trị thực sự xuất hiện.</p></div></details>
+</section><section class="problem" id="bai-2" aria-labelledby="heading-2">
+<h2 id="heading-2">Bài 2. <a href="https://leetcode.com/problems/valid-anagram/" target="_blank" rel="noopener noreferrer">LeetCode - Valid Anagram</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho hai chuỗi chữ cái tiếng Anh thường \(s,t\). Kiểm tra có thể hoán vị các ký tự của \(s\) để được \(t\) hay không. Độ dài mỗi chuỗi không quá \(5\cdot10^4\).</li><li>Hai tham số của hàm là chuỗi <code>s</code> và <code>t</code>. Trả về giá trị boolean.</li></ul>
+<h4>Input</h4><pre class="sample"><code>s = &quot;anagram&quot;, t = &quot;nagaram&quot;</code></pre>
+<h4>Output</h4><pre class="sample"><code>true</code></pre>
+<h4>Giải thích</h4><p><code>anagram</code> và <code>nagaram</code> trả <code>true</code>. <code>rat</code> và <code>car</code> trả <code>false</code>.</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Dùng <code>map&lt;char,int&gt;</code> lưu chênh lệch tần suất. Mỗi ký tự trong \(s\) cộng một, mỗi ký tự trong \(t\) trừ một. Hai chuỗi hợp lệ khi mọi chênh lệch đều bằng không.</li><li>Nếu độ dài khác nhau, trả false. Đếm tăng theo \(s\), đếm giảm theo \(t\), rồi duyệt map để kiểm tra.</li><li>Hoán vị giữ nguyên số lượng từng ký tự. Ngược lại, khi hai chuỗi có cùng số lượng của mọi ký tự, có thể sắp xếp lại các ký tự của chuỗi này để tạo chuỗi kia. Chênh lệch bằng không kiểm tra đúng điều kiện đó.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 2">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span></div><pre><code class="language-cpp">class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size()) {
+            return false;
+        }
+
+        map&lt;char, int&gt; difference;
+        for (char c : s) {
+            ++difference[c];
+        }
+        for (char c : t) {
+            --difference[c];
+        }
+
+        for (const auto&amp; entry : difference) {
+            if (entry.second != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+};</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>Với \(n=|s|+|t|\) và \(\sigma\) là số ký tự khác nhau, thời gian \(O(n\log(\sigma+1))\), bộ nhớ \(O(\sigma)\). Trong đề này \(\sigma\le26\) nên thời gian là \(O(n)\).</p>
+<h4>Lưu ý</h4><p>Set chỉ lưu ký tự nào đã xuất hiện. Bài này cần biết cả số lần xuất hiện nên dùng map đếm tần suất. Với bảng chữ cái cố định, mảng 26 phần tử cũng giải được bài.</p></div></details>
+</section><section class="problem" id="bai-3" aria-labelledby="heading-3">
+<h2 id="heading-3">Bài 3. <a href="https://leetcode.com/problems/intersection-of-two-arrays/" target="_blank" rel="noopener noreferrer">LeetCode - Intersection of Two Arrays</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho hai mảng số nguyên. Trả về những giá trị xuất hiện trong cả hai mảng, mỗi giá trị chỉ xuất hiện một lần trong kết quả. Thứ tự kết quả tùy ý. Mỗi mảng có tối đa \(1000\) phần tử.</li><li>Hai tham số là mảng <code>nums1</code> và <code>nums2</code>. Trả về mảng chứa các giá trị chung phân biệt, theo thứ tự tùy ý.</li></ul>
+<h4>Input</h4><pre class="sample"><code>nums1 = [1, 2, 2, 1]
+nums2 = [2, 2]</code></pre>
+<h4>Output</h4><pre class="sample"><code>[2]</code></pre>
+<h4>Giải thích</h4><p>\([1,2,2,1]\) và \([2,2]\) cho kết quả \([2]\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Đưa các giá trị của mảng thứ nhất vào set. Duyệt mảng thứ hai, nếu tìm thấy giá trị trong set thì thêm vào kết quả và xóa giá trị đó khỏi set.</li><li>Tạo set từ <code>nums1</code>. Với mỗi <code>x</code> trong <code>nums2</code>, dùng <code>find(x)</code>. Nếu tồn tại thì lưu <code>x</code>, sau đó gọi <code>erase(it)</code>.</li><li>Một giá trị chỉ được thêm vào kết quả khi có trong cả hai mảng. Ngay sau lần thêm đầu tiên, giá trị được xóa khỏi set nên các lần gặp tiếp theo không thể thêm lại. Mọi giá trị chung đều được tìm thấy ở lần xuất hiện đầu tiên trong mảng thứ hai.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 3">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span></div><pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; intersection(vector&lt;int&gt;&amp; nums1,
+                             vector&lt;int&gt;&amp; nums2) {
+        set&lt;int&gt; available(nums1.begin(), nums1.end());
+        vector&lt;int&gt; answer;
+
+        for (int x : nums2) {
+            auto it = available.find(x);
+            if (it != available.end()) {
+                answer.push_back(x);
+                available.erase(it);
+            }
+        }
+
+        return answer;
+    }
+};</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>Với hai độ dài \(n,m\), thời gian \(O((n+m)\log(n+1))\), bộ nhớ phụ \(O(n)\), chưa tính mảng kết quả.</p>
+<h4>Lưu ý</h4><p>Bài yêu cầu giá trị phân biệt. Nếu đề đổi thành lấy cả số lần lặp trong giao hai mảng, cần quản lý tần suất bằng map hoặc dùng multiset.</p></div></details>
+</section><section class="problem" id="bai-4" aria-labelledby="heading-4">
+<h2 id="heading-4">Bài 4. <a href="https://cses.fi/problemset/task/1640/" target="_blank" rel="noopener noreferrer">CSES - Sum of Two Values</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho mảng \(n\) số và mục tiêu \(x\). Tìm hai vị trí khác nhau có tổng bằng \(x\). In hai chỉ số bắt đầu từ \(1\), hoặc <code>IMPOSSIBLE</code>. \(n\le2\cdot10^5\).</li><li>Dòng đầu chứa \(n,x\). Dòng tiếp theo chứa \(n\) phần tử. In hai chỉ số bắt đầu từ \(1\), hoặc <code>IMPOSSIBLE</code>.</li></ul>
+<h4>Input</h4><pre class="sample"><code>4 8
+2 7 5 1</code></pre>
+<h4>Output</h4><pre class="sample"><code>2 4</code></pre>
+<h4>Giải thích</h4><p>Với \([2,7,5,1]\), \(x=8\), có thể in \(2\,4\) vì \(7+1=8\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Khi đang xét \(a_i\), cần tìm giá trị \(x-a_i\) trong những phần tử đã duyệt. Dùng map lưu giá trị và một vị trí đã gặp của nó.</li><li>Tìm phần bù trước. Nếu tồn tại thì in vị trí đã lưu và \(i\). Nếu chưa có, mới lưu <code>position[a[i]] = i</code>.</li><li>Map chỉ chứa các vị trí nhỏ hơn \(i\), nên hai vị trí luôn khác nhau. Nếu một cặp hợp lệ tồn tại, khi duyệt tới vị trí phía sau, giá trị tại vị trí phía trước đã có trong map và sẽ được tìm ra.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 4">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long target;
+    cin &gt;&gt; n &gt;&gt; target;
+    map&lt;long long, int&gt; position;
+
+    for (int i = 1; i &lt;= n; ++i) {
+        long long value;
+        cin &gt;&gt; value;
+        auto it = position.find(target - value);
+
+        if (it != position.end()) {
+            cout &lt;&lt; it-&gt;second &lt;&lt; &#x27; &#x27; &lt;&lt; i &lt;&lt; &#x27;\n&#x27;;
+            return 0;
+        }
+        position[value] = i;
+    }
+
+    cout &lt;&lt; &quot;IMPOSSIBLE\n&quot;;
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O(n\log n)\) thời gian và \(O(n)\) bộ nhớ phụ.</p>
+<h4>Lưu ý</h4><p>Lưu phần tử hiện tại trước khi tìm có thể khiến dùng cùng một vị trí hai lần khi \(2a_i=x\). Tìm trước rồi lưu xử lý đúng cả trường hợp hai giá trị bằng nhau.</p></div></details>
+</section><section class="problem" id="bai-5" aria-labelledby="heading-5">
+<h2 id="heading-5">Bài 5. <a href="https://cses.fi/problemset/task/1091/" target="_blank" rel="noopener noreferrer">CSES - Concert Tickets</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Có \(n\) vé với giá cho trước. Lần lượt \(m\) khách đến, mỗi khách có ngân sách \(t\). Bán cho khách vé đắt nhất có giá \(\le t\), rồi xóa vé đó. Nếu không có vé phù hợp, in \(-1\). \(n,m\le2\cdot10^5\).</li><li>Dòng đầu chứa \(n,m\). Dòng thứ hai chứa \(n\) giá vé. Dòng thứ ba chứa ngân sách của \(m\) khách. In một kết quả cho mỗi khách.</li></ul>
+<h4>Input</h4><pre class="sample"><code>5 3
+5 3 7 8 5
+4 8 3</code></pre>
+<h4>Output</h4><pre class="sample"><code>3
+8
+-1</code></pre>
+<h4>Giải thích</h4><p>Vé \([5,3,7,8,5]\), khách \([4,8,3]\) cho kết quả lần lượt \(3,8,-1\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Dùng multiset để lưu các vé còn lại, kể cả vé trùng giá. <code>upper_bound(t)</code> trỏ đến giá đầu tiên \(&gt;t\), nên phần tử ngay trước nó là giá lớn nhất \(\le t\).</li><li>Tìm <code>it = tickets.upper_bound(t)</code>. Nếu <code>it == begin()</code>, không có vé phù hợp. Ngược lại giảm iterator, in giá và xóa đúng vé đó bằng <code>erase(it)</code>.</li><li>Multiset luôn chứa đúng các vé chưa bán. Theo thứ tự tăng dần, phần tử đứng trước giá đầu tiên vượt ngân sách chính là vé đắt nhất khách mua được. Xóa một iterator giữ lại những vé khác cùng giá cho khách sau.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 5">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    multiset&lt;int&gt; tickets;
+    for (int i = 0; i &lt; n; ++i) {
+        int price;
+        cin &gt;&gt; price;
+        tickets.insert(price);
+    }
+
+    for (int i = 0; i &lt; m; ++i) {
+        int budget;
+        cin &gt;&gt; budget;
+        auto it = tickets.upper_bound(budget);
+        if (it == tickets.begin()) {
+            cout &lt;&lt; -1 &lt;&lt; &#x27;\n&#x27;;
+        } else {
+            --it;
+            cout &lt;&lt; *it &lt;&lt; &#x27;\n&#x27;;
+            tickets.erase(it);
+        }
+    }
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O((n+m)\log(n+1))\) thời gian, \(O(n)\) bộ nhớ phụ.</p>
+<h4>Lưu ý</h4><p><code>erase(price)</code> xóa mọi vé cùng giá. Dùng <code>tickets.upper_bound</code> để tìm trong \(O(\log n)\), hàm <code>std::upper_bound</code> trên iterator multiset có thể phải di chuyển tuyến tính.</p></div></details>
+</section><section class="problem" id="bai-6" aria-labelledby="heading-6">
+<h2 id="heading-6">Bài 6. <a href="https://cses.fi/problemset/task/1141/" target="_blank" rel="noopener noreferrer">CSES - Playlist</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho dãy \(n\) mã bài hát, tìm độ dài đoạn liên tiếp dài nhất không chứa mã trùng nhau. \(n\le2\cdot10^5\).</li><li>Dòng đầu chứa \(n\). Dòng tiếp theo chứa \(n\) mã bài hát. In độ dài đoạn hợp lệ dài nhất.</li></ul>
+<h4>Input</h4><pre class="sample"><code>8
+1 2 1 3 2 7 4 2</code></pre>
+<h4>Output</h4><pre class="sample"><code>5</code></pre>
+<h4>Giải thích</h4><p>Dãy \([1,2,1,3,2,7,4,2]\) có đoạn \([1,3,2,7,4]\) dài \(5\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Duy trì đoạn hợp lệ \([left,right]\). Map lưu vị trí xuất hiện gần nhất của mỗi mã. Khi mã hiện tại từng xuất hiện tại \(p\), đặt \(left=\max(left,p+1)\) để bỏ lần xuất hiện cũ nếu còn nằm trong đoạn.</li><li>Với từng \(right\), tìm vị trí cũ rồi cập nhật \(left\). Lưu vị trí mới và cập nhật đáp án bằng \(right-left+1\).</li><li>Trước khi thêm phần tử mới, đoạn hiện tại không trùng. Chỉ mã mới thêm có thể gây trùng. Bỏ mọi vị trí đến lần xuất hiện gần nhất của nó sẽ loại đúng sự trùng đó. Cận trái được giữ nhỏ nhất có thể mà đoạn vẫn hợp lệ, nên ta xét đoạn hợp lệ dài nhất kết thúc tại mỗi \(right\).</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 6">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin &gt;&gt; n;
+    map&lt;int, int&gt; lastPosition;
+    int left = 1;
+    int answer = 0;
+
+    for (int right = 1; right &lt;= n; ++right) {
+        int song;
+        cin &gt;&gt; song;
+        auto it = lastPosition.find(song);
+        if (it != lastPosition.end()) {
+            left = max(left, it-&gt;second + 1);
+        }
+
+        lastPosition[song] = right;
+        answer = max(answer, right - left + 1);
+    }
+
+    cout &lt;&lt; answer &lt;&lt; &#x27;\n&#x27;;
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O(n\log n)\) thời gian, \(O(n)\) bộ nhớ phụ.</p>
+<h4>Lưu ý</h4><p>Thiếu <code>max</code> có thể khiến cận trái lùi về trước. Với \([1,2,2,1]\), khi xét số \(1\) cuối cùng, lần xuất hiện cũ đã nằm ngoài đoạn và không được kéo \(left\) lùi lại.</p></div></details>
+</section><section class="problem" id="bai-7" aria-labelledby="heading-7">
+<h2 id="heading-7">Bài 7. <a href="https://cses.fi/problemset/task/1661/" target="_blank" rel="noopener noreferrer">CSES - Subarray Sums II</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Cho mảng \(n\) số nguyên, có thể có số âm. Đếm số đoạn liên tiếp không rỗng có tổng bằng \(x\). \(n\le2\cdot10^5\), \(|a_i|,|x|\le10^9\).</li><li>Dòng đầu chứa \(n,x\). Dòng tiếp theo chứa \(n\) số nguyên. In số đoạn liên tiếp không rỗng có tổng bằng \(x\).</li></ul>
+<h4>Input</h4><pre class="sample"><code>5 7
+2 -1 3 5 -2</code></pre>
+<h4>Output</h4><pre class="sample"><code>2</code></pre>
+<h4>Giải thích</h4><p>Với \([2,-1,3,5,-2]\), \(x=7\), hai đoạn hợp lệ là \([-1,3,5]\) và \([3,5,-2]\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Gọi \(P_i=a_1+\cdots+a_i\), \(P_0=0\). Tổng đoạn \([l,r]\) bằng \(x\) khi \(P_r-P_{l-1}=x\), tức \(P_{l-1}=P_r-x\). Với mỗi tổng tiền tố hiện tại, cần biết có bao nhiêu tổng tiền tố trước đó bằng nó trừ \(x\).</li><li>Đặt <code>frequency[0] = 1</code>. Với từng phần tử, cập nhật tổng tiền tố \(P\). Cộng số lần đã gặp giá trị \(P-x\) vào đáp án, rồi tăng tần suất của \(P\).</li><li>Trước khi xử lý vị trí \(r\), map đếm đúng \(P_0,\ldots,P_{r-1}\). Mỗi lần xuất hiện của \(P_r-x\) tương ứng duy nhất với một đầu trái hợp lệ. Mỗi đoạn được đếm đúng một lần khi duyệt đến đầu phải của nó.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 7">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long target;
+    cin &gt;&gt; n &gt;&gt; target;
+    map&lt;long long, long long&gt; frequency;
+    frequency[0] = 1;
+    long long prefix = 0;
+    long long answer = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+        long long value;
+        cin &gt;&gt; value;
+        prefix += value;
+        auto it = frequency.find(prefix - target);
+        if (it != frequency.end()) {
+            answer += it-&gt;second;
+        }
+        ++frequency[prefix];
+    }
+
+    cout &lt;&lt; answer &lt;&lt; &#x27;\n&#x27;;
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O(n\log n)\) thời gian, \(O(n)\) bộ nhớ phụ.</p>
+<h4>Lưu ý</h4><p>Quên \(P_0=0\) sẽ bỏ sót các đoạn bắt đầu từ phần tử đầu tiên. Tăng tần suất trước khi đếm có thể đếm cả đoạn rỗng khi \(x=0\). Tổng tiền tố và đáp án phải dùng <code>long long</code>.</p></div></details>
+</section><section class="problem" id="bai-8" aria-labelledby="heading-8">
+<h2 id="heading-8">Bài 8. <a href="https://cses.fi/problemset/task/1163/" target="_blank" rel="noopener noreferrer">CSES - Traffic Lights</a></h2>
+<h4>Tóm tắt</h4>
+<ul><li>Con đường từ \(0\) đến \(x\) ban đầu chưa có đèn. Thêm \(n\) đèn tại những vị trí phân biệt nằm trong đường. Sau mỗi lần thêm, in độ dài khoảng không có đèn dài nhất. \(n\le2\cdot10^5\), \(x\le10^9\).</li><li>Dòng đầu chứa độ dài đường \(x\) và số đèn \(n\). Dòng tiếp theo chứa \(n\) vị trí theo thứ tự thêm. In \(n\) độ dài lớn nhất tương ứng.</li></ul>
+<h4>Input</h4><pre class="sample"><code>8 3
+3 6 2</code></pre>
+<h4>Output</h4><pre class="sample"><code>5 3 3</code></pre>
+<h4>Giải thích</h4><p>\(x=8\), thêm đèn tại \(3,6,2\) thì kết quả lần lượt là \(5,3,3\).</p>
+<details class="solution" ><summary><strong>Lời giải</strong></summary>
+<div class="solution-body"><ol><li>Set lưu các vị trí, ban đầu gồm \(0,x\). Multiset lưu độ dài khoảng trống, ban đầu có \(x\). Khi thêm \(p\), tìm hai vị trí kề \(L&lt;p&lt;R\) bằng <code>upper_bound</code>. Xóa một độ dài \(R-L\), thêm \(p-L\) và \(R-p\), rồi thêm \(p\) vào set. Giá trị lớn nhất trong multiset là đáp án.</li><li>Mỗi đèn mới chỉ chia khoảng chứa nó thành hai khoảng. Các khoảng khác được giữ nguyên. Cập nhật trên duy trì đúng tập các độ dài hiện tại, bao gồm những độ dài bằng nhau, nên phần tử lớn nhất chính là khoảng dài nhất.</li></ol>
+<h4>Code mẫu</h4><div class="code-block"><div class="code-toolbar"><span>C++17</span><button class="copy-code" type="button" aria-label="Sao chép code bài 8">Sao chép</button></div><div class="code-content"><div class="line-numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span>32</span></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int roadLength, n;
+    cin &gt;&gt; roadLength &gt;&gt; n;
+    set&lt;int&gt; positions = {0, roadLength};
+    multiset&lt;int&gt; gaps = {roadLength};
+
+    for (int i = 0; i &lt; n; ++i) {
+        int p;
+        cin &gt;&gt; p;
+        auto rightIt = positions.upper_bound(p);
+        auto leftIt = prev(rightIt);
+        int left = *leftIt;
+        int right = *rightIt;
+
+        auto oldGap = gaps.find(right - left);
+        gaps.erase(oldGap);
+        gaps.insert(p - left);
+        gaps.insert(right - p);
+        positions.insert(p);
+
+        if (i &gt; 0) cout &lt;&lt; &#x27; &#x27;;
+        cout &lt;&lt; *gaps.rbegin();
+    }
+    cout &lt;&lt; &#x27;\n&#x27;;
+    return 0;
+}</code></pre></div></div>
+<h4>Độ phức tạp</h4><p>\(O(n\log n)\) thời gian và \(O(n)\) bộ nhớ phụ.</p>
+<h4>Lưu ý</h4><p>Phải xóa đúng một khoảng bằng iterator vì nhiều khoảng có thể cùng độ dài. Hai mốc \(0,x\) bảo đảm luôn có hàng xóm hai phía. Code dựa vào điều kiện đề bảo đảm các vị trí thêm vào phân biệt và nằm trong \((0,x)\).</p></div></details>
+</section></section>
+<footer><p>Thứ tự độ khó là gợi ý cho việc học. Đề gốc được liên kết ở tên từng bài.</p><p>Bố cục tham khảo <a href="https://hackmd.io/@2SchoolGuideline/rJQ5mNoza" target="_blank" rel="noopener noreferrer">bài viết của 2School Guideline trên HackMD</a>.</p><a href="#dau-trang">↑ Về đầu trang</a></footer></main><div id="copy-status" class="sr-only" role="status" aria-live="polite"></div>
+</body></html>
